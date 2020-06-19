@@ -46,7 +46,7 @@ class Tasklist extends Component {
                 </div>
                 {tasks.map((task) =>{
                  return (
-                     <Task key={task.taskId} task={task} markComplete={this.props.markComplete.bind(this, listId)} />
+                     <Task key={task.taskId} task={task} markComplete={this.props.markComplete.bind(this, listId)} editTask={this.props.editTask.bind(this, listId)} />
                  )
              })}
             
@@ -74,7 +74,7 @@ const tasklistStyle = {
     display: 'flexbox',
     textAlign: 'center',
     border: '2px solid #111111',
-    width: '20%',
+    width: '30%',
     borderRadius: '4px',
     margin: '15px',
     padding: '10px'

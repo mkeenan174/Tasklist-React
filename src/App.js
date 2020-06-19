@@ -12,7 +12,7 @@ class App extends Component {
       {
         listId: 1,
         title: 'Daily Tasks',
-        completion: '50%',
+        completion: '0%',
         numTasks: 3,
         tasks:[
 
@@ -33,16 +33,13 @@ class App extends Component {
             taskTitle: 'Clean up',
             taskComplete: false
           }
-
         ]
-         
-
       },
 
       {
         listId: 2,
         title: 'Personal goals',
-        completion: '50%',
+        completion: '0%',
         numTasks: 2,
         tasks:[
           {
@@ -56,14 +53,10 @@ class App extends Component {
             taskTitle: 'Learn Python',
             taskComplete: false
           }
-
         ]
-
       }
 
     ]
-
-
   }
 
  listHolderStyle={
@@ -75,10 +68,6 @@ class App extends Component {
 }
 
 addTask = (listId, taskInput) =>{
-  console.log(listId, taskInput);
-
-  
-
  this.setState({TaskLists: this.state.TaskLists.map((tasklist) => {
   if(listId === tasklist.listId){
     tasklist.numTasks = tasklist.numTasks + 1
@@ -98,6 +87,7 @@ addTask = (listId, taskInput) =>{
 })
 }
 
+
  setPercentage = (tasklist) =>{
    let completeCounter = 0;
    tasklist.tasks.forEach(task => {
@@ -106,10 +96,29 @@ addTask = (listId, taskInput) =>{
     } 
    });
    let percentage = (completeCounter / tasklist.numTasks * 100).toFixed(0);
+   percentage = percentage.toString()+'%'
    console.log(percentage);
    return percentage;
  }
 
+ editTask = (listId, taskId, edit) =>{
+    console.log(listId, taskId, edit)
+    this.setState({TaskLists: this.state.TaskLists.map((tasklist) =>{
+      if(listId === tasklist.listId){
+        tasklist.tasks.map((task) =>{
+          if(taskId === task.taskId){
+            
+            task.taskTitle = edit
+            console.log(task.taskTitle)
+            return task
+          }
+        })
+      }
+
+      return tasklist
+    })
+  })
+ }
 
  markComplete = (listId, taskId) =>{
         console.log(listId, taskId)
@@ -118,17 +127,14 @@ addTask = (listId, taskInput) =>{
             tasklist.tasks.map((task) => {
               if(taskId === task.taskId){
                 task.taskComplete = true;
-                this.setPercentage(tasklist);
+                tasklist.completion = this.setPercentage(tasklist);
+                
                 return task
                 
-              }
-
-             
+              } 
             })
           }
-          
-          return tasklist
-          
+          return tasklist  
         })  
       });
  }
@@ -140,7 +146,7 @@ addTask = (listId, taskInput) =>{
       <div>
         <PageHeader title={'Task Board'} />
         <div style={this.listHolderStyle} className = {'TaskList-Holder'} >
-          <Lists tasklists={this.state.TaskLists} markComplete={this.markComplete} addTask={this.addTask} />
+          <Lists tasklists={this.state.TaskLists} markComplete={this.markComplete} addTask={this.addTask} editTask={this.editTask} />
         </div>
       </div>
     );
