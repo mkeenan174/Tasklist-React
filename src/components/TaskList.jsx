@@ -7,8 +7,16 @@ class Tasklist extends Component {
     state = {
         newTaskTitle: '',
         newTaskDate: ''
+    }
 
-        
+    inputStyle = {
+        display:'inline-block',
+        borderRadius: '3px',
+        decoration: 'none',
+        shadow: 'none', 
+        border: '1px solid #eee',
+        marginBottom: '3px',
+        padding: '1px'
     }
     
     updateInput = (e) => this.setState({newTaskTitle: e.target.value });
@@ -29,21 +37,23 @@ class Tasklist extends Component {
             margin: '0',
             padding: '0',
             borderRadius: '5px',
+            transition: 'width 2s'
 
         }
 
     }    
 
     render() {
-        const {listId, title, tasks, completion} = this.props.tasklist;
+        const {listId, title, dueDate, tasks, completion} = this.props.tasklist;
         console.log(this.state.newTaskTitle, this.state.newTaskDate);
         
         return (
             <div style = {tasklistStyle} >
-                <h3>{title}</h3>
+                <h3 style={{margin: '3px'}}>{title}</h3>
                 <div className="Task-completion-bar" style={completionBarStyle} >
                     <div className="Task-completion-progress" style={this.progressStyle(completion)}></div>
                 </div>
+                <span>Due: {dueDate}</span>
                 {tasks.map((task) =>{
                  return (
                      <Task key={task.taskId} task={task} markComplete={this.props.markComplete.bind(this, listId)} editTask={this.props.editTask.bind(this, listId)} />
@@ -51,8 +61,10 @@ class Tasklist extends Component {
              })}
             
             
-             <span><input type="text" placeholder="Add task..." value={this.state.newTaskTitle} onChange={this.updateInput} /> <input type="date" onChange={this.updateDate} value={this.state.newTaskDate} />{' '} 
-             <button style={buttonStyle} onClick={this.submitTask} >add</button></span>
+             <span>
+                 <input type="text" placeholder="Add task..." style={this.inputStyle} value={this.state.newTaskTitle} onChange={this.updateInput} /> 
+                 <button style={buttonStyle} onClick={this.submitTask}>add</button>
+             </span>
 
          </div>
         );
@@ -66,15 +78,16 @@ const completionBarStyle = {
     borderRadius: '5px',
     width:'70%',
     height:'15px',
-    margin: 'auto'
+    margin: 'auto',
+    marginTop: '15px',
+    marginBottom: '15px'
 }
 
 const tasklistStyle = {
     position: 'relative',
-    display: 'flexbox',
     textAlign: 'center',
     border: '2px solid #111111',
-    width: '30%',
+    width: '300px',
     borderRadius: '4px',
     margin: '15px',
     padding: '10px'
@@ -91,5 +104,6 @@ const buttonStyle = {
     shadow: 'none',
     padding: '10',
     width: '35px',
-    height: '20px'
+    height: '18px',
+    marginLeft: '5px'
 }

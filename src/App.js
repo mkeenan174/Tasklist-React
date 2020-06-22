@@ -1,17 +1,23 @@
 import React, { Component } from 'react';
 import PageHeader from './components/PageHeader';
 import Lists from './components/Lists';
+import ListFormModal from './components/ListFormModal'
 import './App.css';
 
 
 class App extends Component {
+
   state = {
+
+    modalShow: false,
+    numLists: 2,
 
     TaskLists:[
 
       {
         listId: 1,
         title: 'Daily Tasks',
+        dueDate: '00-00-0000',
         completion: '0%',
         numTasks: 3,
         tasks:[
@@ -39,6 +45,7 @@ class App extends Component {
       {
         listId: 2,
         title: 'Personal goals',
+        dueDate: '12-12-2021',
         completion: '0%',
         numTasks: 2,
         tasks:[
@@ -59,12 +66,20 @@ class App extends Component {
     ]
   }
 
+
  listHolderStyle={
     width: '100vw',
     margin: '0',
     padding: '5px',
     border:'solid 1px #111111',
-    display: 'flex'
+    display: 'flex',
+    flexWrap: 'wrap' 
+
+}
+
+saveTaskLists(){
+  let taskListData = this.state.TaskLists
+  localStorage.setItem('saveData', taskListData);
 }
 
 addTask = (listId, taskInput) =>{
@@ -110,6 +125,7 @@ addTask = (listId, taskInput) =>{
             
             task.taskTitle = edit
             console.log(task.taskTitle)
+            this.saveTaskLists()
             return task
           }
         })
@@ -140,11 +156,66 @@ addTask = (listId, taskInput) =>{
  }
 
 
+  modalOpen = () =>{
+    console.log('open')
+    if(this.state.modalShow === false){
+      this.setState({ modalShow: true})
+    }
+  } 
+
+  modalClose = () =>{
+    console.log('close')
+    if(this.state.modalShow === true){
+      this.setState({modalShow: false})
+    }
+  } 
+
+  modalToggleElement = {
+    display: 'inline-block',
+    color: '#111',
+    margin: '5px'
+
+  }
+
+  newTaskList =(listInfo) => {
+      console.log(listInfo)
+      this.setState({numLists: this.state.numLists + 1})
+      let listTasks = []
+      let taskCounter = 1
+
+      listInfo.listTasks.forEach((taskInfo)=> {
+          let newTask = {
+            taskId: this.state.numLists + (taskCounter * 0.1),
+            taskTitle: taskInfo.taskTitle,
+            taskComplete: false
+          }
+
+          listTasks.push(newTask)
+          taskCounter++
+      })
+
+      let TaskList = {
+        listId: this.state.numLists,
+        title: listInfo.listTitle,
+        dueDate: listInfo.listDate,
+        completion: '0%',
+        numTasks: listInfo.numTasks,
+        tasks: listTasks
+      }
+
+      this.setState({TaskLists: [...this.state.TaskLists, TaskList]})
+
+  }
 
   render() {
     return (
       <div>
         <PageHeader title={'Task Board'} />
+        <ListFormModal modalShow={this.state.modalShow} modalClose={this.modalClose} newTaskList={this.newTaskList}/>
+        <span onClick={this.modalOpen} style={{float: "right", borderRadius: '4px', border: '1px solid #111', cursor:"pointer", margin: '3px'}}>
+          <h5 style={this.modalToggleElement} >Create List</h5>
+          <i style={this.modalToggleElement} className={'material-icons'} >add</i>
+        </span>
         <div style={this.listHolderStyle} className = {'TaskList-Holder'} >
           <Lists tasklists={this.state.TaskLists} markComplete={this.markComplete} addTask={this.addTask} editTask={this.editTask} />
         </div>
