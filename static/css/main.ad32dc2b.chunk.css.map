@@ -1,0 +1,1 @@
+{"version":3,"sources":["App.css"],"names":[],"mappings":"AAAA,EACE,2CAA8C,CAC9C,QAAS,CACT,SAAU,CACV,iBAEF","file":"main.ad32dc2b.chunk.css","sourcesContent":["*{\n  font-family: 'Courier New', Courier, monospace;\n  margin: 0;\n  padding: 0;\n  overflow-x: hidden;\n\n}"]}
