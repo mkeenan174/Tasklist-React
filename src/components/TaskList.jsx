@@ -6,7 +6,8 @@ class Tasklist extends Component {
      
     state = {
         newTaskTitle: '',
-        newTaskDate: ''
+        newTaskDate: '',
+        locked: false,
     }
 
     inputStyle = {
@@ -19,14 +20,34 @@ class Tasklist extends Component {
         padding: '1px'
     }
     
+
+
+    lockList = () =>{
+        console.log('Locking')
+        if (this.props.tasklist.completion === '100%') {
+
+            if(this.state.locked === false){
+                this.setState({locked: true})
+                console.log('List locked')
+            }else{
+                this.setState({locked: false})
+                console.log('List unlocked')
+            }
+        }
+
+    }
     updateInput = (e) => this.setState({newTaskTitle: e.target.value });
 
     updateDate = (e) => this.setState({newTaskDate: e.target.value});
 
     submitTask = () => {
-        this.props.addTask(this.props.tasklist.listId, this.state.newTaskTitle);
-        this.setState({newTaskTitle: '', newTaskDate : ''});
+
+        if(this.state.locked === false){
+            this.props.addTask(this.props.tasklist.listId, this.state.newTaskTitle);
+            this.setState({newTaskTitle: '', newTaskDate : ''});
         }
+     
+    }
 
 
     progressStyle = (percentage) =>{
@@ -37,11 +58,13 @@ class Tasklist extends Component {
             margin: '0',
             padding: '0',
             borderRadius: '5px',
-            transition: 'width 2s'
-
+            transition: 'width 2s',
+            fontSize: '15px'
         }
 
-    }    
+    }  
+    
+  
 
     render() {
         const {listId, title, dueDate, tasks, completion} = this.props.tasklist;
@@ -52,7 +75,9 @@ class Tasklist extends Component {
                  <i style={{fontSize: '15px', display: 'block', float:'right', cursor: 'pointer', marginRight: '5px' }} className = {'material-icons'} onClick={this.props.deleteTaskList.bind(this, listId)} >close</i>
                 <h3 style={{margin: '3px'}}>{title}</h3>
                 <div className="Task-completion-bar" style={completionBarStyle} >
-                    <div className="Task-completion-progress" style={this.progressStyle(completion)}></div>
+                    <div className="Task-completion-progress" style={this.progressStyle(completion)}>
+                        {completion}
+                    </div>
                 </div>
                 <span>Due: {dueDate}</span>
                 {tasks.map((task) =>{
@@ -65,6 +90,10 @@ class Tasklist extends Component {
              <span>
                  <input type="text" placeholder="Add task..." style={this.inputStyle} value={this.state.newTaskTitle} onChange={this.updateInput} /> 
                  <button style={buttonStyle} onClick={this.submitTask}>add</button>
+             </span>
+
+             <span style={checkBoxStyle}>
+                 <small>Lock list:</small><input type="checkbox" onClick={this.lockList} checked={this.state.locked} />
              </span>
 
          </div>
@@ -93,6 +122,12 @@ const tasklistStyle = {
     margin: '15px',
     padding: '10px'
 
+}
+
+const checkBoxStyle = {
+    display: 'block',
+    margin: 'auto',
+    marginTop: '10px'
 }
 
 

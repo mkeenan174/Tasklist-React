@@ -106,7 +106,7 @@ addTask = (listId, taskInput) =>{
  this.setState({TaskLists: this.state.TaskLists.map((tasklist) => {
   if(listId === tasklist.listId){
     tasklist.numTasks = tasklist.numTasks + 1
-    let taskId = listId + (tasklist.numTasks * .1);
+    let taskId = listId +  (tasklist.numTasks * .1)   ;
     const newTask = {
       taskId,
       taskTitle: taskInput,
@@ -114,11 +114,13 @@ addTask = (listId, taskInput) =>{
       
     }
     tasklist.tasks.push(newTask)
+    tasklist.completion = this.setPercentage(tasklist)
     return tasklist
     }
     return tasklist
   }) 
 })
+
 }
 
 
@@ -215,6 +217,7 @@ addTask = (listId, taskInput) =>{
         title: listInfo.listTitle,
         dueDate: listInfo.listDate,
         completion: '0%',
+        locked: false,
         numTasks: listInfo.numTasks,
         tasks: listTasks
       }
@@ -239,7 +242,6 @@ addTask = (listId, taskInput) =>{
       }
   }
   render() {
-    console.log(this.loadTaskLists())
     return (
        <div>
          <PageHeader title={'Task Board'} />

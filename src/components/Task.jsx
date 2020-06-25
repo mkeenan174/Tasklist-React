@@ -5,6 +5,7 @@ export default class Task extends Component {
 
 
     state ={
+        showMenu: true,
         editing: false,
         editInput: ''
     }
@@ -41,12 +42,15 @@ export default class Task extends Component {
     }
 
     
+
+    
     editingOn = () => this.setState({editing: true})
 
     editingOff = () => this.setState({editing:false, editInput:''})
 
     updateEdit = (e) => this.setState({editInput: e.target.value})
 
+    
 
     render() {
         let taskId = this.props.task.taskId;
@@ -66,8 +70,9 @@ export default class Task extends Component {
                     <h6 style= {{display: 'inline-block', float:'left', padding: 0, marginLeft: '5px'}}>{taskId}</h6>
                     <small style={this.taskTextStyle(taskComplete)} >{taskTitle}</small>
                     {' '}
-                    <i style={{ display: 'inline-block',fontSize: '15px' , cursor: 'pointer' }} className = {'material-icons'} onClick={this.editingOn}>settings</i>{' '}
-                    <input style= {{display: 'inline-block', float:'right', cursor: 'pointer', marginRight: '5px'}} type="radio" onChange = {this.props.markComplete.bind(this, taskId)}/>
+                    <i style={{ display: 'inline-block',fontSize: '15px' , cursor: 'pointer' }} className = {'material-icons'} onClick={this.editingOn}>more_vert</i>
+                    {' '}
+                    <input style= {{display: 'inline-block', float:'right', cursor: 'pointer', marginRight: '5px'}} type="radio" onChange = {this.props.markComplete.bind(this, taskId)}checked={taskComplete} />
                 </span>
             )
         }else{
