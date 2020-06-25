@@ -6,66 +6,79 @@ import './App.css';
 
 
 class App extends Component {
+  constructor(props){
+    super()
 
-  state = {
+    let listCounter = 0;
+    let tasklists;
+    if(this.loadTaskLists() !== null){
+        tasklists = this.loadTaskLists()
+        tasklists.forEach((list) => listCounter++);
+        console.log(listCounter)
+        this.state ={
+          modalShow: false,
+          numLists: listCounter,
 
-    modalShow: false,
-    numLists: 2,
+          TaskLists: tasklists
 
-    TaskLists:[
+          
+        }
 
-      {
-        listId: 1,
-        title: 'Daily Tasks',
-        dueDate: '00-00-0000',
-        completion: '0%',
-        numTasks: 3,
-        tasks:[
-
-          {
-            taskId: 1.1,
-            taskTitle: 'Make bed',
-            taskComplete: false
-          },
-  
-          {
-            taskId: 1.2,
-            taskTitle: 'Cook Dinner',
-            taskComplete: false
-          },
-  
-          {
-            taskId: 1.3,
-            taskTitle: 'Clean up',
-            taskComplete: false
-          }
-        ]
-      },
-
-      {
-        listId: 2,
-        title: 'Personal goals',
-        dueDate: '12-12-2021',
-        completion: '0%',
-        numTasks: 2,
-        tasks:[
-          {
-            taskId: 2.1,
-            taskTitle: 'Loose weight ',
-            taskComplete: false
-          },
-
-          {
-            taskId: 2.2,
-            taskTitle: 'Learn Python',
-            taskComplete: false
-          }
-        ]
+    }else{
+      this.state = {
+        modalShow: false,
+        numLists: 0,
+        TaskLists:[
+              // {
+                // listId: 1,
+                // title: 'Daily Tasks',
+                // dueDate: '00-00-0000',
+                // completion: '0%',
+                // numTasks: 3,
+                // tasks:[
+                  // {
+                    // taskId: 1.1,
+                    // taskTitle: 'Make bed',
+                    // taskComplete: false
+                  // },
+                  // {
+                    // taskId: 1.2,
+                    // taskTitle: 'Cook Dinner',
+                    // taskComplete: false
+                  // },
+                  // {
+                    // taskId: 1.3,
+                    // taskTitle: 'Clean up',
+                    // taskComplete: false
+                  // }
+                // ]
+              // },
+              // {
+                // listId: 2,
+                // title: 'Personal goals',
+                // dueDate: '12-12-2021',
+                // completion: '0%',
+                // numTasks: 2,
+                // tasks:[
+                  // {
+                    // taskId: 2.1,
+                    // taskTitle: 'Loose weight ',
+                    // taskComplete: false
+                  // },
+                  // {
+                    // taskId: 2.2,
+                    // taskTitle: 'Learn Python',
+                    // taskComplete: false
+                  // }
+                // ]
+              // }
+            ]
       }
+    }
 
-    ]
-  }
-
+}  
+    
+ 
 
  listHolderStyle={
     width: '100vw',
@@ -78,9 +91,16 @@ class App extends Component {
 }
 
 saveTaskLists(){
-  let taskListData = this.state.TaskLists
+  let taskListData = JSON.stringify(this.state.TaskLists)
   localStorage.setItem('saveData', taskListData);
 }
+
+
+loadTaskLists(){
+  let taskListData = localStorage.getItem('saveData')
+  return JSON.parse(taskListData);
+}
+
 
 addTask = (listId, taskInput) =>{
  this.setState({TaskLists: this.state.TaskLists.map((tasklist) => {
@@ -94,7 +114,6 @@ addTask = (listId, taskInput) =>{
       
     }
     tasklist.tasks.push(newTask)
-    console.log(tasklist.tasks)
     return tasklist
     }
     return tasklist
@@ -122,10 +141,8 @@ addTask = (listId, taskInput) =>{
       if(listId === tasklist.listId){
         tasklist.tasks.map((task) =>{
           if(taskId === task.taskId){
-            
             task.taskTitle = edit
             console.log(task.taskTitle)
-            this.saveTaskLists()
             return task
           }
         })
@@ -144,7 +161,6 @@ addTask = (listId, taskInput) =>{
               if(taskId === task.taskId){
                 task.taskComplete = true;
                 tasklist.completion = this.setPercentage(tasklist);
-                
                 return task
                 
               } 
@@ -177,7 +193,7 @@ addTask = (listId, taskInput) =>{
 
   }
 
-  newTaskList =(listInfo) => {
+  newTaskList = (listInfo) => {
       console.log(listInfo)
       this.setState({numLists: this.state.numLists + 1})
       let listTasks = []
@@ -204,22 +220,39 @@ addTask = (listId, taskInput) =>{
       }
 
       this.setState({TaskLists: [...this.state.TaskLists, TaskList]})
-
   }
 
+
+  deleteTaskList = (listId) =>{
+    let newTaskLists = [];
+    this.state.TaskLists.forEach((tasklist) =>{
+        if(tasklist.listId !== listId) newTaskLists.push(tasklist);
+    })
+
+    this.setState({TaskLists: newTaskLists});
+  }
+
+  componentDidUpdate(prevProps, prevState){
+      if(this.state.TaskLists !== prevState.TaskLists){
+        console.log('saving...')
+        this.saveTaskLists()
+      }
+  }
   render() {
+    console.log(this.loadTaskLists())
     return (
-      <div>
-        <PageHeader title={'Task Board'} />
-        <ListFormModal modalShow={this.state.modalShow} modalClose={this.modalClose} newTaskList={this.newTaskList}/>
-        <span onClick={this.modalOpen} style={{float: "right", borderRadius: '4px', border: '1px solid #111', cursor:"pointer", margin: '3px'}}>
-          <h5 style={this.modalToggleElement} >Create List</h5>
-          <i style={this.modalToggleElement} className={'material-icons'} >add</i>
-        </span>
-        <div style={this.listHolderStyle} className = {'TaskList-Holder'} >
-          <Lists tasklists={this.state.TaskLists} markComplete={this.markComplete} addTask={this.addTask} editTask={this.editTask} />
-        </div>
-      </div>
+       <div>
+         <PageHeader title={'Task Board'} />
+         <ListFormModal modalShow={this.state.modalShow} modalClose={this.modalClose} newTaskList={this.newTaskList}/>
+         <span onClick={this.modalOpen} style={{float: "right", borderRadius: '4px', border: '1px solid #111', cursor:"pointer", margin: '3px'}}>
+           <h5 style={this.modalToggleElement} >Create List</h5>
+           <i style={this.modalToggleElement} className={'material-icons'} >add</i>
+         </span>
+         <div style={this.listHolderStyle} className = {'TaskList-Holder'} >
+           <Lists tasklists={this.state.TaskLists} markComplete={this.markComplete} addTask={this.addTask} editTask={this.editTask} deleteTaskList={this.deleteTaskList} />
+         </div>
+       </div>
+      
     );
   }
 }

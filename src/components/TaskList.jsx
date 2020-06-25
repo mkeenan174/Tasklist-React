@@ -49,6 +49,7 @@ class Tasklist extends Component {
         
         return (
             <div style = {tasklistStyle} >
+                 <i style={{fontSize: '15px', display: 'block', float:'right', cursor: 'pointer', marginRight: '5px' }} className = {'material-icons'} onClick={this.props.deleteTaskList.bind(this, listId)} >close</i>
                 <h3 style={{margin: '3px'}}>{title}</h3>
                 <div className="Task-completion-bar" style={completionBarStyle} >
                     <div className="Task-completion-progress" style={this.progressStyle(completion)}></div>

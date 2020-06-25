@@ -72,11 +72,10 @@ class ListFormModal extends Component {
                 listTasks: this.state.newTasks,
                 numTasks: this.state.taskNum
 
-
             }
 
             this.props.newTaskList(info)
-
+            this.setState({titleInput : '', dateInput:'', taskNum: 0, newTasks: []})
             this.props.modalClose()
 
         }
@@ -113,9 +112,7 @@ class ListFormModal extends Component {
 
     render() {
         let open = this.props.modalShow;
-        console.log(open);
         if(open === true){
-            console.log('modal open')
             return (
             
                 <div className="Modal-Overlay" style={this.coverStyle} >
@@ -140,7 +137,6 @@ class ListFormModal extends Component {
                             <div>
                                 {this.state.newTasks.map((task) => {
                                     
-                                    console.log(task.taskTitle)
                                     return(
                                         <span style={this.modalElementStyle} >{task.taskTitle}</span>
                                     )
@@ -152,7 +148,6 @@ class ListFormModal extends Component {
                 </div>
             );
         }else{
-            console.log('close')
             return null;
         }
        

@@ -7,7 +7,7 @@ function Lists(props){
     return lists.map((tasklist) =>{
         return(
             
-            <Tasklist key= {tasklist.listId} tasklist ={tasklist} markComplete={props.markComplete} addTask={props.addTask} editTask={props.editTask} />
+            <Tasklist key= {tasklist.listId} tasklist ={tasklist} markComplete={props.markComplete} addTask={props.addTask} editTask={props.editTask} deleteTaskList={props.deleteTaskList} />
             
         )
     })
